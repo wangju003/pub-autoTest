@@ -1,6 +1,6 @@
 from caseManage import app
 from caseManage.common.CURD import insert,select,update
-# from flask import render_template
+from caseManage.common.jenkinsOperation import buildJob
 
 from flask import Flask,jsonify,request,abort
 
@@ -43,6 +43,12 @@ def selectCase():
         response[case['id']] = case
     return jsonify(response)
 
+@app.route('/pubTest/api/runCase/',methods = ['GET','POST'])
+def runCase():
+    buildJob('testVenv')
+
+    return jsonify({'code':200,'msg':'Start Run automationTest'})
 
 if __name__ =='__main__':
+
     app.run(debug=True)
