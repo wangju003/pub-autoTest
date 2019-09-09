@@ -1,6 +1,6 @@
 from caseManage import app
 from caseManage.common.CURD import insert,select,update
-from caseManage.common.jenkinsOperation import buildJob
+from caseManage.common.jenkinsOperation import buildJob,getReport
 
 from flask import Flask,jsonify,request,abort
 
@@ -43,11 +43,35 @@ def selectCase():
         response[case['id']] = case
     return jsonify(response)
 
-@app.route('/pubTest/api/runCase/',methods = ['GET','POST'])
-def runCase():
-    buildJob('testVenv')
+@app.route('/pubTest/api/startAutomation/',methods = ['GET','POST'])
+def startAutomation():
+    '''
+    :return: 返回是否启动自动化测试
+    '''
+    #启动自动化测试
+    buildState = {'code':200,'msg':'Start Run automationTest'}
+    buildState['datas'] = buildJob()
+    return jsonify(buildState)
 
-    return jsonify({'code':200,'msg':'Start Run automationTest'})
+@app.route('/pubTest/api/getResult/',methods=['GET','POST'])
+def getResult():
+    '''
+    获取自动化测试报告，构建结束返回测试报告地址；构建中 False
+    :return: 返回报告地址
+    '''
+
+    buildResult = getReport()
+    print('2222222',buildResult)
+    if  buildResult :
+        response = {'code':200,'buildState':False,'msg':'build done'}
+        response['datas']=buildResult
+    else:
+        response = {'code': 200,'buildState':True, 'msg': 'job is building,please wait'}
+
+    return jsonify(response)
+
+
+
 
 if __name__ =='__main__':
 
