@@ -61,7 +61,6 @@ def getResult():
     '''
 
     buildResult = getReport()
-    print('2222222',buildResult)
     if  buildResult :
         response = {'code':200,'buildState':False,'msg':'build done'}
         response['datas']=buildResult

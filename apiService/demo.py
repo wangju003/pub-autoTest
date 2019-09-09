@@ -14,7 +14,7 @@ jobName1='pubTest1'
 jobName2='pubTest2'
 # 获取job名为testJob的job的最后次构建号
 autoLBN = server.get_job_info(jobName1)['lastBuild']['number']
-scriptLBN= server.get_job_info(jobName2)['lastBuild']['number']
+# scriptLBN= server.get_job_info(jobName2)['lastBuild']['number']
 
 
 #实例化jenkins对象，连接远程的jenkins master server
@@ -61,6 +61,7 @@ while sleeptime < 50:
       sleeptime=50
 print ("sleeptime",sleeptime)
 print ("退出sleep循环")
+
 
 if server.get_build_info(jobName2,next_bn)['building'] == False:
     print('构建结束了')

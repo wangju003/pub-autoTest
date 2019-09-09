@@ -12,9 +12,7 @@ api_token = '11d8c79994b1e6d554c857b1d96fcf4dfe' #测试服务器
 server = jenkins.Jenkins(jenkins_server_url, username=user_id, password=api_token)
 jobName1='pubTest1'
 jobName2='pubTest2'
-# 获取job名为testJob的job的最后次构建号
-autoLBN = server.get_job_info(jobName1)['lastBuild']['number']
-scriptLBN= server.get_job_info(jobName2)['lastBuild']['number']
+
 
 def testDemo():
     #定义远程的jenkins master server 的url,以及port
@@ -52,12 +50,12 @@ def buildJob():
     :return:
     '''
     buildResult={}
-    if server.build_job(jobName1):
-        buildResult[jobName1]='Start'
-
-    if server.build_job(jobName2):
-        buildResult[jobName2]='Start'
-    return buildResult
+    # if server.build_job(jobName1):
+    #     buildResult[jobName1]='Start'
+    #
+    # if server.build_job(jobName2):
+    #     buildResult[jobName2]='Start'
+    # return buildResult
 
     try:
         next_bn = server.get_job_info(jobName2)['nextBuildNumber']
@@ -67,8 +65,9 @@ def buildJob():
         time.sleep(5)
         next_bn = server.get_job_info(jobName2)['nextBuildNumber']
     else:
-        buildResult['next_bn':next_bn]
+        buildResult['next_bn']=next_bn
         print('本次执行的jenkins job编号为：', next_bn)
+
     try:
         server.build_job(jobName2)
     except:
@@ -98,16 +97,18 @@ def buildJob():
             sleeptime = 50
     print("sleeptime", sleeptime)
     print("退出sleep循环")
-
+    return buildResult
 
 def getBuildState():
     '''
     获取jenkins构建结果
     :return: True 构建中 False 构建结束
     '''
+    # 获取job名为testJob的job的最后次构建号
+    autoLBN = server.get_job_info(jobName1)['lastBuild']['number']
+    scriptLBN = server.get_job_info(jobName2)['lastBuild']['number']
 
     # 判断job是否还在构建中,False表示构建结束，True表示构建中
-
     autoStatus = server.get_build_info(jobName1, autoLBN)['building']
     scriptStatus=server.get_build_info(jobName2,scriptLBN)['building']
 
@@ -120,10 +121,10 @@ def getBuildState():
 def getReport():
     '''
     构建完成，获取测试报告
-    :return: result 构建结束返回测试报告地址；构建中 返回{}
+    :return: result 构建结束返回测试报告地址；构建中 返回False
     '''
     buildState = getBuildState() #False表示构建结束，True表示构建中
-    print('11111',buildState)
+
     result = {}
     if not buildState:
         result['automationTest'] = 'http://1.1.1.1/report.html'
@@ -132,5 +133,5 @@ def getReport():
     else:
         return False
 if __name__ == '__main__':
-    b=getReport()
+    b=buildJob()
     print(b)
