@@ -107,7 +107,7 @@ def getBuildState():
     '''
 
     # 判断job是否还在构建中,False表示构建结束，True表示构建中
-    print('0000',autoLBN,scriptLBN)
+
     autoStatus = server.get_build_info(jobName1, autoLBN)['building']
     scriptStatus=server.get_build_info(jobName2,scriptLBN)['building']
 
